@@ -210,6 +210,7 @@ void QQuickImageBase::load()
         d->pix.load(qmlEngine(this), d->url, d->sourcesize, options);
 
         if (d->pix.isLoading()) {
+            update();
             if (d->progress != 0.0) {
                 d->progress = 0.0;
                 emit progressChanged(d->progress);

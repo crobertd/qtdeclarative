@@ -1467,24 +1467,26 @@ void QQuickListViewPrivate::fixup(AxisData &data, qreal minExtent, qreal maxExte
         }
     } else if (currentItem && strictHighlightRange && moveReason != QQuickListViewPrivate::SetIndex) {
         updateHighlight();
-        qreal pos = static_cast<FxListItemSG*>(currentItem)->itemPosition();
-        if (viewPos < pos + static_cast<FxListItemSG*>(currentItem)->itemSize() - highlightRangeEnd)
-            viewPos = pos + static_cast<FxListItemSG*>(currentItem)->itemSize() - highlightRangeEnd;
-        if (viewPos > pos - highlightRangeStart)
-            viewPos = pos - highlightRangeStart;
-        if (isContentFlowReversed())
-            viewPos = -viewPos-size();
+        if (currentItem) {
+            qreal pos = static_cast<FxListItemSG*>(currentItem)->itemPosition();
+            if (viewPos < pos + static_cast<FxListItemSG*>(currentItem)->itemSize() - highlightRangeEnd)
+                viewPos = pos + static_cast<FxListItemSG*>(currentItem)->itemSize() - highlightRangeEnd;
+            if (viewPos > pos - highlightRangeStart)
+                viewPos = pos - highlightRangeStart;
+            if (isContentFlowReversed())
+                viewPos = -viewPos-size();
 
-        timeline.reset(data.move);
-        if (viewPos != position()) {
-            if (fixupMode != Immediate) {
-                timeline.move(data.move, -viewPos, QEasingCurve(QEasingCurve::InOutQuad), fixupDuration/2);
-                data.fixingUp = true;
-            } else {
-                timeline.set(data.move, -viewPos);
+            timeline.reset(data.move);
+            if (viewPos != position()) {
+                if (fixupMode != Immediate) {
+                    timeline.move(data.move, -viewPos, QEasingCurve(QEasingCurve::InOutQuad), fixupDuration/2);
+                    data.fixingUp = true;
+                } else {
+                    timeline.set(data.move, -viewPos);
+                }
             }
+            vTime = timeline.time();
         }
-        vTime = timeline.time();
     } else {
         QQuickItemViewPrivate::fixup(data, minExtent, maxExtent);
     }

@@ -211,6 +211,8 @@ QQuickVisualDataModel::~QQuickVisualDataModel()
         cacheItem->objectRef = 0;
         if (!cacheItem->isReferenced())
             delete cacheItem;
+        else
+            d->releaseIncubator(cacheItem->incubationTask);
     }
 }
 
