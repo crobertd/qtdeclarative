@@ -476,7 +476,10 @@ int main(int argc, char ** argv)
                 if (contentItem) {
                     qxView = new QQuickView(&engine, NULL);
                     window = qxView;
-                    window->setWindowFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+                    // Set window default properties; the qml can still override them
+                    QString oname = contentItem->objectName();
+                    window->setTitle(oname.isEmpty() ? QString::fromLatin1("qmlscene") : QString::fromLatin1("qmlscene: ") + oname);
+                    window->setFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
                     if (options.resizeViewToRootItem)
                         qxView->setResizeMode(QQuickView::SizeViewToRootObject);
                     else

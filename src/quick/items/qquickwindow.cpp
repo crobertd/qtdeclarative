@@ -1093,14 +1093,6 @@ QQuickItem *QQuickWindow::mouseGrabberItem() const
 }
 
 
-/*!
-    \qmlproperty color QtQuick.Window2::Window::color
-
-    The background color for the window.
-
-    Setting this property is more efficient than using a separate Rectangle.
-*/
-
 bool QQuickWindowPrivate::clearHover()
 {
     Q_Q(QQuickWindow);
@@ -2004,7 +1996,11 @@ bool QQuickWindowPrivate::isRenderable() const
 {
     if (geometry.width() <= 0 || geometry.height() <= 0)
         return false;
-    return visible || (renderWithoutShowing && platformWindow);
+    // Change to be applied after the visibility property is integrated in qtbase:
+//    return visibility != QWindow::Hidden || (renderWithoutShowing && platformWindow);
+    // Temporary version which is implementation-agnostic but slightly less efficient:
+    const QQuickWindow *q = q_func();
+    return q->isVisible() || (renderWithoutShowing && platformWindow);
 }
 
 /*!
@@ -2474,7 +2470,7 @@ QOpenGLContext *QQuickWindow::openglContext() const
 void QQuickWindow::setRenderTarget(QOpenGLFramebufferObject *fbo)
 {
     Q_D(QQuickWindow);
-    if (d->context && d->context && QThread::currentThread() != d->context->thread()) {
+    if (d->context && QThread::currentThread() != d->context->thread()) {
         qWarning("QQuickWindow::setRenderThread: Cannot set render target from outside the rendering thread");
         return;
     }
@@ -2506,7 +2502,7 @@ void QQuickWindow::setRenderTarget(QOpenGLFramebufferObject *fbo)
 void QQuickWindow::setRenderTarget(uint fboId, const QSize &size)
 {
     Q_D(QQuickWindow);
-    if (d->context && d->context && QThread::currentThread() != d->context->thread()) {
+    if (d->context && QThread::currentThread() != d->context->thread()) {
         qWarning("QQuickWindow::setRenderThread: Cannot set render target from outside the rendering thread");
         return;
     }
@@ -2759,6 +2755,14 @@ QSGTexture *QQuickWindow::createTextureFromId(uint id, const QSize &size, Create
 }
 
 /*!
+    \qmlproperty color QtQuick.Window2::Window::color
+
+    The background color for the window.
+
+    Setting this property is more efficient than using a separate Rectangle.
+*/
+
+/*!
     \property QQuickWindow::color
     \brief The color used to clear the OpenGL context.
 
@@ -2776,6 +2780,7 @@ void QQuickWindow::setColor(const QColor &color)
 
     d->clearColor = color;
     emit colorChanged(color);
+    d->dirtyItem(contentItem());
 }
 
 QColor QQuickWindow::color() const
@@ -2783,7 +2788,26 @@ QColor QQuickWindow::color() const
     return d_func()->clearColor;
 }
 
+/*!
+    \qmlproperty string QtQuick.Window2::Window::title
 
+    The window's title in the windowing system.
+
+    The window title might appear in the title area of the window decorations,
+    depending on the windowing system and the window flags. It might also
+    be used by the windowing system to identify the window in other contexts,
+    such as in the task switcher.
+ */
+
+/*!
+    \qmlproperty string QtQuick.Window2::Window::modality
+
+    The modality of the window.
+
+    A modal window prevents other windows from receiving input events.
+    Possible values are Qt.NonModal (the default), Qt.WindowModal,
+    and Qt.ApplicationModal.
+ */
 
 #include "moc_qquickwindow.cpp"
 
