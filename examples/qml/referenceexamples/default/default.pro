@@ -7,7 +7,5 @@ HEADERS += person.h \
            birthdayparty.h
 RESOURCES += default.qrc
 
-target.path = $$[QT_INSTALL_EXAMPLES]/qtquick/qml/extending/default
-sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS default.pro
-sources.path = $$[QT_INSTALL_EXAMPLES]/qtquick/qml/extending/default
-INSTALLS += target sources
+target.path = $$[QT_INSTALL_EXAMPLES]/qml/referenceexamples/default
+INSTALLS += target

@@ -345,6 +345,7 @@ void QQuickItemKeyFilter::keyReleased(QKeyEvent *event, bool post)
     if (m_next) m_next->keyReleased(event, post);
 }
 
+#ifndef QT_NO_IM
 void QQuickItemKeyFilter::inputMethodEvent(QInputMethodEvent *event, bool post)
 {
     if (m_next)
@@ -358,6 +359,7 @@ QVariant QQuickItemKeyFilter::inputMethodQuery(Qt::InputMethodQuery query) const
     if (m_next) return m_next->inputMethodQuery(query);
     return QVariant();
 }
+#endif // QT_NO_IM
 
 void QQuickItemKeyFilter::componentComplete()
 {
@@ -1194,6 +1196,7 @@ void QQuickKeysAttached::setPriority(Priority order)
 void QQuickKeysAttached::componentComplete()
 {
     Q_D(QQuickKeysAttached);
+#ifndef QT_NO_IM
     if (d->item) {
         for (int ii = 0; ii < d->targets.count(); ++ii) {
             QQuickItem *targetItem = d->targets.at(ii);
@@ -1203,6 +1206,7 @@ void QQuickKeysAttached::componentComplete()
             }
         }
     }
+#endif
 }
 
 void QQuickKeysAttached::keyPressed(QKeyEvent *event, bool post)
@@ -1279,6 +1283,7 @@ void QQuickKeysAttached::keyReleased(QKeyEvent *event, bool post)
     if (!event->isAccepted()) QQuickItemKeyFilter::keyReleased(event, post);
 }
 
+#ifndef QT_NO_IM
 void QQuickKeysAttached::inputMethodEvent(QInputMethodEvent *event, bool post)
 {
     Q_D(QQuickKeysAttached);
@@ -1317,6 +1322,7 @@ QVariant QQuickKeysAttached::inputMethodQuery(Qt::InputMethodQuery query) const
     }
     return QQuickItemKeyFilter::inputMethodQuery(query);
 }
+#endif // QT_NO_IM
 
 QQuickKeysAttached *QQuickKeysAttached::qmlAttachedProperties(QObject *obj)
 {
@@ -2180,9 +2186,11 @@ void QQuickItemPrivate::addChild(QQuickItem *child)
 
     childItems.append(child);
 
+#ifndef QT_NO_CURSOR
     QQuickItemPrivate *childPrivate = QQuickItemPrivate::get(child);
     if (childPrivate->extra.isAllocated())
         incrementCursorCount(childPrivate->extra.value().numItemsWithCursor);
+#endif
 
     markSortedChildrenDirty(child);
     dirty(QQuickItemPrivate::ChildrenChanged);
@@ -2201,9 +2209,11 @@ void QQuickItemPrivate::removeChild(QQuickItem *child)
     childItems.removeOne(child);
     Q_ASSERT(!childItems.contains(child));
 
+#ifndef QT_NO_CURSOR
     QQuickItemPrivate *childPrivate = QQuickItemPrivate::get(child);
     if (childPrivate->extra.isAllocated())
         incrementCursorCount(-childPrivate->extra.value().numItemsWithCursor);
+#endif
 
     markSortedChildrenDirty(child);
     dirty(QQuickItemPrivate::ChildrenChanged);
@@ -3099,6 +3109,7 @@ void QQuickItem::keyReleaseEvent(QKeyEvent *event)
     event->ignore();
 }
 
+#ifndef QT_NO_IM
 /*!
     This event handler can be reimplemented in a subclass to receive input
     method events for an item. The event information is provided by the
@@ -3108,6 +3119,7 @@ void QQuickItem::inputMethodEvent(QInputMethodEvent *event)
 {
     event->ignore();
 }
+#endif // QT_NO_IM
 
 /*!
     This event handler can be reimplemented in a subclass to receive focus-in
@@ -3336,6 +3348,7 @@ void QQuickItem::windowDeactivateEvent()
     }
 }
 
+#ifndef QT_NO_IM
 /*!
     This method is only relevant for input items.
 
@@ -3370,6 +3383,7 @@ QVariant QQuickItem::inputMethodQuery(Qt::InputMethodQuery query) const
 
     return v;
 }
+#endif // QT_NO_IM
 
 QQuickAnchorLine QQuickItemPrivate::left() const
 {
@@ -4023,6 +4037,7 @@ void QQuickItemPrivate::deliverKeyEvent(QKeyEvent *e)
     }
 }
 
+#ifndef QT_NO_IM
 void QQuickItemPrivate::deliverInputMethodEvent(QInputMethodEvent *e)
 {
     Q_Q(QQuickItem);
@@ -4048,6 +4063,7 @@ void QQuickItemPrivate::deliverInputMethodEvent(QInputMethodEvent *e)
         extra->keyHandler->inputMethodEvent(e, true);
     }
 }
+#endif // QT_NO_IM
 
 void QQuickItemPrivate::deliverFocusEvent(QFocusEvent *e)
 {
@@ -4146,6 +4162,7 @@ void QQuickItem::itemChange(ItemChange change, const ItemChangeData &value)
     Q_UNUSED(value);
 }
 
+#ifndef QT_NO_IM
 /*!
     Notify input method on updated query values if needed. \a queries indicates
     the changed attributes.
@@ -4155,6 +4172,7 @@ void QQuickItem::updateInputMethod(Qt::InputMethodQueries queries)
     if (hasActiveFocus())
         qApp->inputMethod()->update(queries);
 }
+#endif // QT_NO_IM
 
 /*! \internal */
 // XXX todo - do we want/need this anymore?
@@ -5305,7 +5323,7 @@ qreal QQuickItem::y() const
 /*!
     \internal
   */
-QPointF QQuickItem::pos() const
+QPointF QQuickItem::position() const
 {
     Q_D(const QQuickItem);
     return QPointF(d->x, d->y);
@@ -5344,7 +5362,7 @@ void QQuickItem::setY(qreal v)
 /*!
     \internal
   */
-void QQuickItem::setPos(const QPointF &pos)
+void QQuickItem::setPosition(const QPointF &pos)
 {
     Q_D(QQuickItem);
     if (QPointF(d->x, d->y) == pos)
@@ -6504,6 +6522,7 @@ bool QQuickItem::event(QEvent *ev)
         return QObject::event(ev);
     }
 #endif
+#ifndef QT_NO_IM
     if (ev->type() == QEvent::InputMethodQuery) {
         QInputMethodQueryEvent *query = static_cast<QInputMethodQueryEvent *>(ev);
         Qt::InputMethodQueries queries = query->queries();
@@ -6519,7 +6538,9 @@ bool QQuickItem::event(QEvent *ev)
     } else if (ev->type() == QEvent::InputMethod) {
         inputMethodEvent(static_cast<QInputMethodEvent *>(ev));
         return true;
-    } else if (ev->type() == QEvent::StyleAnimationUpdate) {
+    } else
+#endif // QT_NO_IM
+    if (ev->type() == QEvent::StyleAnimationUpdate) {
         update();
         return true;
     }
@@ -6537,7 +6558,7 @@ QDebug operator<<(QDebug debug, QQuickItem *item)
     debug << item->metaObject()->className() << "(this =" << ((void*)item)
           << ", name=" << item->objectName()
           << ", parent =" << ((void*)item->parentItem())
-          << ", geometry =" << QRectF(item->pos(), QSizeF(item->width(), item->height()))
+          << ", geometry =" << QRectF(item->position(), QSizeF(item->width(), item->height()))
           << ", z =" << item->z() << ')';
     return debug;
 }

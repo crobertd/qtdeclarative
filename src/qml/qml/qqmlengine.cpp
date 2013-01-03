@@ -89,6 +89,10 @@
 
 #include <private/qqmllocale_p.h>
 
+#include "qqmlbind_p.h"
+#include "qqmlconnections_p.h"
+#include "qqmltimer_p.h"
+
 #ifdef Q_OS_WIN // for %APPDATA%
 #include <qt_windows.h>
 #include <qlibrary.h>
@@ -165,12 +169,17 @@ void qmlRegisterBaseTypes(const char *uri, int versionMajor, int versionMinor)
 */
 
 bool QQmlEnginePrivate::qml_debugging_enabled = false;
+bool QQmlEnginePrivate::s_designerMode = false;
 
 // these types are part of the QML language
 void QQmlEnginePrivate::registerBaseTypes(const char *uri, int versionMajor, int versionMinor)
 {
     qmlRegisterType<QQmlComponent>(uri,versionMajor,versionMinor,"Component");
     qmlRegisterType<QObject>(uri,versionMajor,versionMinor,"QtObject");
+    qmlRegisterType<QQmlBind>(uri, versionMajor, versionMinor,"Binding");
+    qmlRegisterType<QQmlConnections>(uri, versionMajor, versionMinor,"Connections");
+    qmlRegisterType<QQmlTimer>(uri, versionMajor, versionMinor,"Timer");
+    qmlRegisterCustomType<QQmlConnections>(uri, versionMajor, versionMinor,"Connections", new QQmlConnectionsParser);
 }
 
 
@@ -190,6 +199,16 @@ void QQmlEnginePrivate::defineQtQuick2Module()
     // register the QtQuick2 types which are implemented in the QtQml module.
     registerQtQuick2Types("QtQuick",2,0);
     qmlRegisterUncreatableType<QQmlLocale>("QtQuick", 2, 0, "Locale", QQmlEngine::tr("Locale cannot be instantiated.  Use Qt.locale()"));
+}
+
+bool QQmlEnginePrivate::designerMode()
+{
+    return s_designerMode;
+}
+
+void QQmlEnginePrivate::activateDesignerMode()
+{
+    s_designerMode = true;
 }
 
 
@@ -656,13 +675,13 @@ void QQmlEnginePrivate::init()
         firstTime = false;
     }
 
-    qRegisterMetaType<QVariant>("QVariant");
-    qRegisterMetaType<QQmlScriptString>("QQmlScriptString");
-    qRegisterMetaType<QJSValue>("QJSValue");
-    qRegisterMetaType<QQmlComponent::Status>("QQmlComponent::Status");
-    qRegisterMetaType<QList<QObject*> >("QList<QObject*>");
-    qRegisterMetaType<QList<int> >("QList<int>");
-    qRegisterMetaType<QQmlV8Handle>("QQmlV8Handle");
+    qRegisterMetaType<QVariant>();
+    qRegisterMetaType<QQmlScriptString>();
+    qRegisterMetaType<QJSValue>();
+    qRegisterMetaType<QQmlComponent::Status>();
+    qRegisterMetaType<QList<QObject*> >();
+    qRegisterMetaType<QList<int> >();
+    qRegisterMetaType<QQmlV8Handle>();
 
     v8engine()->setEngine(q);
 
@@ -1670,8 +1689,8 @@ void QQmlEngine::addImportPath(const QString& path)
   type version mapping and possibly QML extensions plugins.
 
   By default, the list contains the directory of the application executable,
-  paths specified in the \c QML_IMPORT_PATH environment variable,
-  and the builtin \c ImportsPath from QLibraryInfo.
+  paths specified in the \c QML2_IMPORT_PATH environment variable,
+  and the builtin \c Qml2ImportsPath from QLibraryInfo.
 
   \sa addImportPath(), setImportPathList()
 */
@@ -1686,8 +1705,8 @@ QStringList QQmlEngine::importPathList() const
   installed modules in a URL-based directory structure.
 
   By default, the list contains the directory of the application executable,
-  paths specified in the \c QML_IMPORT_PATH environment variable,
-  and the builtin \c ImportsPath from QLibraryInfo.
+  paths specified in the \c QML2_IMPORT_PATH environment variable,
+  and the builtin \c Qml2ImportsPath from QLibraryInfo.
 
   \sa importPathList(), addImportPath()
   */
@@ -2059,7 +2078,7 @@ bool QQmlEnginePrivate::isScriptLoaded(const QUrl &url) const
     return typeLoader.isScriptLoaded(url);
 }
 
-bool QQml_isFileCaseCorrect(const QString &fileName)
+bool QQml_isFileCaseCorrect(const QString &fileName, int lengthIn /* = -1 */)
 {
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     QFileInfo info(fileName);
@@ -2081,7 +2100,21 @@ bool QQml_isFileCaseCorrect(const QString &fileName)
     const int absoluteLength = absolute.length();
     const int canonicalLength = canonical.length();
 
-    const int length = qMin(absoluteLength, canonicalLength);
+    int length = qMin(absoluteLength, canonicalLength);
+    if (lengthIn >= 0) {
+        length = qMin(lengthIn, length);
+    } else {
+        // No length given: Limit to file name. Do not trigger
+        // on drive letters or folder names.
+        int lastSlash = absolute.lastIndexOf(QLatin1Char('/'));
+        if (lastSlash < 0)
+            lastSlash = absolute.lastIndexOf(QLatin1Char('\\'));
+        if (lastSlash >= 0) {
+            const int fileNameLength = absoluteLength - 1 - lastSlash;
+            length = qMin(length, fileNameLength);
+        }
+    }
+
     for (int ii = 0; ii < length; ++ii) {
         const QChar &a = absolute.at(absoluteLength - 1 - ii);
         const QChar &c = canonical.at(canonicalLength - 1 - ii);
@@ -2092,6 +2125,7 @@ bool QQml_isFileCaseCorrect(const QString &fileName)
             return false;
     }
 #else
+    Q_UNUSED(lengthIn)
     Q_UNUSED(fileName)
 #endif
     return true;

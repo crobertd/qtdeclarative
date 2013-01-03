@@ -58,8 +58,6 @@
 #include <QtCore/qstringbuilder.h>
 #include <QtCore/qdebug.h>
 
-Q_DECLARE_METATYPE(QQmlV8Handle)
-
 QT_BEGIN_NAMESPACE
 
 static QQmlJavaScriptExpression::VTable QQmlBoundSignalExpression_jsvtable = {
@@ -196,6 +194,7 @@ void QQmlBoundSignalExpression::evaluate(void **a)
                 expression = rewriter(m_expression, QString()/*no name hint available*/, &ok,
                                       signal.parameterNames(),
                                       ep->v8engine()->illegalNames());
+                setParameterCountForJS(rewriter.parameterCountForJS());
                 m_expression.clear();
             }
 

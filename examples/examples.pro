@@ -1,11 +1,5 @@
 TEMPLATE = subdirs
 SUBDIRS += \
-    demos \
-    shared \
-    localstorage \
-    particles \
+    qmltest \
     qml \
-    quick \
-    tutorials \
-    window \
-    qmltest
+    quick

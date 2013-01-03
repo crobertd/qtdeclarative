@@ -76,7 +76,6 @@ Q_DECLARE_METATYPE(QList<qreal>)
 Q_DECLARE_METATYPE(QList<bool>)
 Q_DECLARE_METATYPE(QList<QString>)
 Q_DECLARE_METATYPE(QList<QUrl>)
-Q_DECLARE_METATYPE(QJSValue)
 
 QT_BEGIN_NAMESPACE
 
@@ -3524,6 +3523,7 @@ void QQmlCompiler::genBindingAssignment(QQmlScript::Value *binding,
     Q_ASSERT(binding->bindingReference);
 
     const BindingReference &ref = *binding->bindingReference;
+#ifndef QT_NO_TRANSLATION
     if (ref.dataType == BindingReference::TrId) {
         const TrBindingReference &tr = static_cast<const TrBindingReference &>(ref);
 
@@ -3542,7 +3542,9 @@ void QQmlCompiler::genBindingAssignment(QQmlScript::Value *binding,
         store.comment = output->indexForByteArray(tr.comment.toUtf8());
         store.n = tr.n;
         output->addInstruction(store);
-    } else if (ref.dataType == BindingReference::V4) {
+    } else
+#endif
+    if (ref.dataType == BindingReference::V4) {
         const JSBindingReference &js = static_cast<const JSBindingReference &>(ref);
 
         Instruction::StoreV4Binding store;

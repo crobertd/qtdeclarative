@@ -64,7 +64,7 @@ static const int PressAndHoldDelay = 800;
 #ifndef QT_NO_DRAGANDDROP
 
 QQuickDrag::QQuickDrag(QObject *parent)
-: QObject(parent), _target(0), _axis(XandYAxis), _xmin(-FLT_MAX),
+: QObject(parent), _target(0), _axis(XAndYAxis), _xmin(-FLT_MAX),
 _xmax(FLT_MAX), _ymin(-FLT_MAX), _ymax(FLT_MAX), _active(false), _filterChildren(false)
 {
 }
@@ -783,8 +783,8 @@ void QQuickMouseArea::mouseMoveEvent(QMouseEvent *event)
     if (d->drag && d->drag->target()) {
         if (!d->moved) {
             d->targetStartPos = d->drag->target()->parentItem()
-                    ? d->drag->target()->parentItem()->mapToScene(d->drag->target()->pos())
-                    : d->drag->target()->pos();
+                    ? d->drag->target()->parentItem()->mapToScene(d->drag->target()->position())
+                    : d->drag->target()->position();
         }
 
         QPointF startLocalPos;
@@ -807,7 +807,7 @@ void QQuickMouseArea::mouseMoveEvent(QMouseEvent *event)
                 ? d->drag->target()->parentItem()->mapFromScene(d->targetStartPos)
                 : d->targetStartPos;
 
-        QPointF dragPos = d->drag->target()->pos();
+        QPointF dragPos = d->drag->target()->position();
 
         bool dragX = drag()->axis() & QQuickDrag::XAxis;
         bool dragY = drag()->axis() & QQuickDrag::YAxis;
@@ -828,7 +828,7 @@ void QQuickMouseArea::mouseMoveEvent(QMouseEvent *event)
                 y = drag()->ymax();
             dragPos.setY(y);
         }
-        d->drag->target()->setPos(dragPos);
+        d->drag->target()->setPosition(dragPos);
 
         if (!keepMouseGrab()) {
             bool xDragged = QQuickWindowPrivate::dragOverThreshold(dx, Qt::XAxis, event);
@@ -1331,7 +1331,7 @@ void QQuickMouseArea::setCursorShape(Qt::CursorShape shape)
     \list
     \li \c drag.target specifies the id of the item to drag.
     \li \c drag.active specifies if the target item is currently being dragged.
-    \li \c drag.axis specifies whether dragging can be done horizontally (\c Drag.XAxis), vertically (\c Drag.YAxis), or both (\c Drag.XandYAxis)
+    \li \c drag.axis specifies whether dragging can be done horizontally (\c Drag.XAxis), vertically (\c Drag.YAxis), or both (\c Drag.XAndYAxis)
     \li \c drag.minimum and \c drag.maximum limit how far the target can be dragged along the corresponding axes.
     \endlist
 

@@ -116,9 +116,6 @@ tst_examples::tst_examples() : window(0)
     excludedDirs << "snippets/qml/xmlrole.qml";
 #endif
 
-    // QTBUG-24034 - don't run customparticle examples
-    excludedDirs << "demos/flickr";
-    excludedDirs << "examples/particles/customparticle";
 }
 
 tst_examples::~tst_examples()
@@ -170,10 +167,16 @@ void tst_examples::namingConvention(const QDir &d)
             namingConvention(sub);
         }
     } else if(!seenLowercase) {
-        QFAIL(qPrintable(QString(
+        // QTBUG-28271 don't fail, but rather warn only
+        qWarning() << QString(
             "Directory %1 violates naming convention; expected at least one qml file "
             "starting with lower case, got: %2"
-        ).arg(d.absolutePath()).arg(files.join(","))));
+        ).arg(d.absolutePath()).arg(files.join(","));
+
+//        QFAIL(qPrintable(QString(
+//            "Directory %1 violates naming convention; expected at least one qml file "
+//            "starting with lower case, got: %2"
+//        ).arg(d.absolutePath()).arg(files.join(","))));
     }
 }
 

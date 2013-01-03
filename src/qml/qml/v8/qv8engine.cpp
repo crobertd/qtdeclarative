@@ -63,7 +63,6 @@
 #include <QtCore/qjsonobject.h>
 #include <QtCore/qjsonvalue.h>
 
-Q_DECLARE_METATYPE(QJSValue)
 Q_DECLARE_METATYPE(QList<int>)
 
 
@@ -631,7 +630,9 @@ void QV8Engine::initializeGlobal(v8::Handle<v8::Object> global)
 
     if (m_engine) {
         qt->SetAccessor(v8::String::New("application"), getApplication, 0, v8::External::New(this));
+#ifndef QT_NO_IM
         qt->SetAccessor(v8::String::New("inputMethod"), getInputMethod, 0, v8::External::New(this));
+#endif
         qt->Set(v8::String::New("lighter"), V8FUNCTION(lighter, this));
         qt->Set(v8::String::New("darker"), V8FUNCTION(darker, this));
         qt->Set(v8::String::New("tint"), V8FUNCTION(tint, this));
@@ -640,12 +641,14 @@ void QV8Engine::initializeGlobal(v8::Handle<v8::Object> global)
         qt->Set(v8::String::New("createComponent"), V8FUNCTION(createComponent, this));
     }
 
+#ifndef QT_NO_TRANSLATION
     global->Set(v8::String::New("qsTranslate"), V8FUNCTION(qsTranslate, this));
     global->Set(v8::String::New("QT_TRANSLATE_NOOP"), V8FUNCTION(qsTranslateNoOp, this));
     global->Set(v8::String::New("qsTr"), V8FUNCTION(qsTr, this));
     global->Set(v8::String::New("QT_TR_NOOP"), V8FUNCTION(qsTrNoOp, this));
     global->Set(v8::String::New("qsTrId"), V8FUNCTION(qsTrId, this));
     global->Set(v8::String::New("QT_TRID_NOOP"), V8FUNCTION(qsTrIdNoOp, this));
+#endif
 
     global->Set(v8::String::New("print"), consoleLogFn);
     global->Set(v8::String::New("console"), console);
@@ -1447,11 +1450,13 @@ v8::Handle<v8::Value> QV8Engine::getApplication(v8::Local<v8::String>, const v8:
     return engine->newQObject(engine->m_application);
 }
 
+#ifndef QT_NO_IM
 v8::Handle<v8::Value> QV8Engine::getInputMethod(v8::Local<v8::String>, const v8::AccessorInfo &info)
 {
     QV8Engine *engine = reinterpret_cast<QV8Engine*>(v8::External::Unwrap(info.Data()));
     return engine->newQObject(QQml_guiProvider()->inputMethod(), CppOwnership);
 }
+#endif
 
 void QV8GCCallback::registerGcPrologueCallback()
 {

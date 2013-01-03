@@ -1,7 +1,13 @@
 TEMPLATE = subdirs
 
-SUBDIRS +=imageprovider \
-          plugins \
+SUBDIRS += \
           networkaccessmanagerfactory \
+          plugins \
           referenceexamples \
-          shell
+          shell \
+          xmlhttprequest
+
+EXAMPLE_FILES = \
+    dynamicscene \
+    i18n \
+    locale

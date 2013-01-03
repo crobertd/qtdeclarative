@@ -29,8 +29,18 @@ Module {
         Signal {
             name: "layoutChanged"
             Parameter { name: "parents"; type: "QList<QPersistentModelIndex>" }
+            Parameter { name: "hint"; type: "QAbstractItemModel::LayoutChangeHint" }
+        }
+        Signal {
+            name: "layoutChanged"
+            Parameter { name: "parents"; type: "QList<QPersistentModelIndex>" }
         }
         Signal { name: "layoutChanged" }
+        Signal {
+            name: "layoutAboutToBeChanged"
+            Parameter { name: "parents"; type: "QList<QPersistentModelIndex>" }
+            Parameter { name: "hint"; type: "QAbstractItemModel::LayoutChangeHint" }
+        }
         Signal {
             name: "layoutAboutToBeChanged"
             Parameter { name: "parents"; type: "QList<QPersistentModelIndex>" }
@@ -164,7 +174,6 @@ Module {
                 "ContextMenu": 1
             }
         }
-        Property { name: "inputItem"; type: "QObject"; isPointer: true }
         Property { name: "cursorRectangle"; type: "QRectF"; isReadonly: true }
         Property { name: "keyboardRectangle"; type: "QRectF"; isReadonly: true }
         Property { name: "visible"; type: "bool"; isReadonly: true }
@@ -217,6 +226,15 @@ Module {
             name: "destroy"
             Parameter { name: "delay"; type: "int" }
         }
+    }
+    Component {
+        name: "QQmlBind"
+        prototype: "QObject"
+        exports: ["QtQml/Binding 2.0", "QtQuick/Binding 2.0"]
+        Property { name: "target"; type: "QObject"; isPointer: true }
+        Property { name: "property"; type: "string" }
+        Property { name: "value"; type: "QVariant" }
+        Property { name: "when"; type: "bool" }
     }
     Component {
         name: "QQmlComponent"
@@ -275,6 +293,13 @@ Module {
         prototype: "QObject"
         Signal { name: "completed" }
         Signal { name: "destruction" }
+    }
+    Component {
+        name: "QQmlConnections"
+        prototype: "QObject"
+        exports: ["QtQml/Connections 2.0", "QtQuick/Connections 2.0"]
+        Property { name: "target"; type: "QObject"; isPointer: true }
+        Property { name: "ignoreUnknownSignals"; type: "bool" }
     }
     Component {
         name: "QQmlEasingValueType"
@@ -378,6 +403,20 @@ Module {
             }
         }
     }
+    Component {
+        name: "QQmlTimer"
+        prototype: "QObject"
+        exports: ["QtQml/Timer 2.0", "QtQuick/Timer 2.0"]
+        Property { name: "interval"; type: "int" }
+        Property { name: "running"; type: "bool" }
+        Property { name: "repeat"; type: "bool" }
+        Property { name: "triggeredOnStart"; type: "bool" }
+        Property { name: "parent"; type: "QObject"; isReadonly: true; isPointer: true }
+        Signal { name: "triggered" }
+        Method { name: "start" }
+        Method { name: "stop" }
+        Method { name: "restart" }
+    }
     Component { name: "QQmlValueType"; prototype: "QObject" }
     Component {
         name: "QQuickAbstractAnimation"
@@ -417,6 +456,14 @@ Module {
         Method { name: "resume" }
         Method { name: "stop" }
         Method { name: "complete" }
+    }
+    Component {
+        name: "QQuickAccessibleAttached"
+        prototype: "QObject"
+        exports: ["QtQuick/Accessible 2.0"]
+        Property { name: "role"; type: "QAccessible::Role" }
+        Property { name: "name"; type: "string" }
+        Property { name: "description"; type: "string" }
     }
     Component {
         name: "QQuickAnchorAnimation"
@@ -669,6 +716,7 @@ Module {
         exports: ["QtQuick/Application 2.0"]
         Property { name: "active"; type: "bool"; isReadonly: true }
         Property { name: "layoutDirection"; type: "Qt::LayoutDirection"; isReadonly: true }
+        Property { name: "supportsMultipleWindows"; type: "bool"; isReadonly: true }
     }
     Component {
         name: "QQuickBasePositioner"
@@ -688,15 +736,6 @@ Module {
         exports: ["QtQuick/Behavior 2.0"]
         Property { name: "animation"; type: "QQuickAbstractAnimation"; isPointer: true }
         Property { name: "enabled"; type: "bool" }
-    }
-    Component {
-        name: "QQuickBind"
-        prototype: "QObject"
-        exports: ["QtQuick/Binding 2.0"]
-        Property { name: "target"; type: "QObject"; isPointer: true }
-        Property { name: "property"; type: "string" }
-        Property { name: "value"; type: "QVariant" }
-        Property { name: "when"; type: "bool" }
     }
     Component {
         name: "QQuickBorderImage"
@@ -817,13 +856,6 @@ Module {
         exports: ["QtQuick/Column 2.0"]
     }
     Component {
-        name: "QQuickConnections"
-        prototype: "QObject"
-        exports: ["QtQuick/Connections 2.0"]
-        Property { name: "target"; type: "QObject"; isPointer: true }
-        Property { name: "ignoreUnknownSignals"; type: "bool" }
-    }
-    Component {
         name: "QQuickCurve"
         prototype: "QQuickPathElement"
         Property { name: "x"; type: "double" }
@@ -848,7 +880,7 @@ Module {
             values: {
                 "XAxis": 1,
                 "YAxis": 2,
-                "XandYAxis": 3
+                "XAndYAxis": 3
             }
         }
         Property { name: "target"; type: "QQuickItem"; isPointer: true }
@@ -1304,7 +1336,6 @@ Module {
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
         Property { name: "resources"; type: "QObject"; isList: true; isReadonly: true }
         Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
-        Property { name: "pos"; type: "QPointF"; isReadonly: true }
         Property { name: "x"; type: "double" }
         Property { name: "y"; type: "double" }
         Property { name: "z"; type: "double" }
@@ -2306,7 +2337,7 @@ Module {
                 "NoDrag": 0,
                 "XAxis": 1,
                 "YAxis": 2,
-                "XandYAxis": 3
+                "XAndYAxis": 3
             }
         }
         Property { name: "target"; type: "QQuickItem"; isPointer: true }
@@ -3448,20 +3479,6 @@ Module {
         }
     }
     Component {
-        name: "QQuickTimer"
-        prototype: "QObject"
-        exports: ["QtQuick/Timer 2.0"]
-        Property { name: "interval"; type: "int" }
-        Property { name: "running"; type: "bool" }
-        Property { name: "repeat"; type: "bool" }
-        Property { name: "triggeredOnStart"; type: "bool" }
-        Property { name: "parent"; type: "QObject"; isReadonly: true; isPointer: true }
-        Signal { name: "triggered" }
-        Method { name: "start" }
-        Method { name: "stop" }
-        Method { name: "restart" }
-    }
-    Component {
         name: "QQuickTouchPoint"
         prototype: "QObject"
         exports: ["QtQuick/TouchPoint 2.0"]
@@ -3871,7 +3888,9 @@ Module {
                 "MacWindowToolBarButtonHint": 268435456,
                 "BypassGraphicsProxyWidget": 536870912,
                 "WindowOkButtonHint": 524288,
-                "WindowCancelButtonHint": 1048576
+                "WindowCancelButtonHint": 1048576,
+                "NoDropShadowWindowHint": 1073741824,
+                "WindowFullscreenButtonHint": -2147483648
             }
         }
         Enum {
@@ -3910,7 +3929,9 @@ Module {
                 "MacWindowToolBarButtonHint": 268435456,
                 "BypassGraphicsProxyWidget": 536870912,
                 "WindowOkButtonHint": 524288,
-                "WindowCancelButtonHint": 1048576
+                "WindowCancelButtonHint": 1048576,
+                "NoDropShadowWindowHint": 1073741824,
+                "WindowFullscreenButtonHint": -2147483648
             }
         }
         Enum {

@@ -1328,8 +1328,9 @@ v8::Handle<v8::Value> createComponent(const v8::Arguments &args)
     return v8engine->newQObject(c);
 }
 
+#ifndef QT_NO_TRANSLATION
 /*!
-    \qmlmethod string qsTranslate(string context, string sourceText, string disambiguation, int n)
+    \qmlmethod string Qt::qsTranslate(string context, string sourceText, string disambiguation, int n)
 
     Returns a translated version of \a sourceText within the given \a context, optionally based on a
     \a disambiguation string and value of \a n for strings containing plurals;
@@ -1381,7 +1382,7 @@ v8::Handle<v8::Value> qsTranslate(const v8::Arguments &args)
 }
 
 /*!
-    \qmlmethod string QT_TRANSLATE_NOOP(string context, string sourceText, string disambiguation)
+    \qmlmethod string Qt::qsTranslateNoOp(string context, string sourceText, string disambiguation)
 
     Marks \a sourceText for dynamic translation in the given \a context; i.e, the stored \a sourceText
     will not be altered.
@@ -1410,7 +1411,7 @@ v8::Handle<v8::Value> qsTranslateNoOp(const v8::Arguments &args)
 }
 
 /*!
-    \qmlmethod string qsTr(string sourceText, string disambiguation, int n)
+    \qmlmethod string Qt::qsTr(string sourceText, string disambiguation, int n)
 
     Returns a translated version of \a sourceText, optionally based on a
     \a disambiguation string and value of \a n for strings containing plurals;
@@ -1459,7 +1460,7 @@ v8::Handle<v8::Value> qsTr(const v8::Arguments &args)
 }
 
 /*!
-    \qmlmethod string QT_TR_NOOP(string sourceText, string disambiguation)
+    \qmlmethod string Qt::qsTrNoOp(string sourceText, string disambiguation)
 
     Marks \a sourceText for dynamic translation; i.e, the stored \a sourceText
     will not be altered.
@@ -1488,7 +1489,7 @@ v8::Handle<v8::Value> qsTrNoOp(const v8::Arguments &args)
 }
 
 /*!
-    \qmlmethod string qsTrId(string id, int n)
+    \qmlmethod string Qt::qsTrId(string id, int n)
 
     Returns a translated string identified by \a id.
     If no matching string is found, the id itself is returned. This
@@ -1535,7 +1536,7 @@ v8::Handle<v8::Value> qsTrId(const v8::Arguments &args)
 }
 
 /*!
-    \qmlmethod string QT_TRID_NOOP(string id)
+    \qmlmethod string Qt::qsTrIdNoOp(string id)
 
     Marks \a id for dynamic translation.
 
@@ -1556,7 +1557,7 @@ v8::Handle<v8::Value> qsTrIdNoOp(const v8::Arguments &args)
         return v8::Undefined();
     return args[0];
 }
-
+#endif // QT_NO_TRANSLATION
 
 /*!
     \qmlmethod Qt::locale(name)

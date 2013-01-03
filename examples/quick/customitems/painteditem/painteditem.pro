@@ -1,5 +1,5 @@
 TEMPLATE = lib
-CONFIG += qt plugin
+CONFIG += plugin
 QT += qml quick
 
 TARGET = qmltextballoonplugin
@@ -9,17 +9,12 @@ HEADERS += TextBalloonPlugin/plugin.h \
 
 SOURCES += textballoon.cpp
 
-OTHER_FILES += textballoon.json
+RESOURCES += painteditem.qrc
 
 DESTDIR = TextBalloonPlugin
 
-qdeclarativesources.files += \
-    TextBalloonPlugin/qmldir
+target.path = $$[QT_INSTALL_EXAMPLES]/quick/customitems/painteditem/TextBalloonPlugin
+qmldir.files = TextBalloonPlugin/qmldir
+qmldir.path = $$[QT_INSTALL_EXAMPLES]/quick/customitems/painteditem/TextBalloonPlugin
 
-qdeclarativesources.path += $$[QT_INSTALL_EXAMPLES]/qtquick/qml/painteditem/TextBalloonPlugin
- 
-sources.files = textballoons.qml
-sources.path += $$[QT_INSTALL_EXAMPLES]/qtquick/qml/painteditem
-target.path += $$[QT_INSTALL_EXAMPLES]/qtquick/qml/painteditem/TextBalloonPlugin
-
-INSTALLS = qdeclarativesources sources target
+INSTALLS += qmldir target

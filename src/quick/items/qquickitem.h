@@ -105,7 +105,6 @@ class Q_QUICK_EXPORT QQuickItem : public QObject, public QQmlParserStatus
     Q_PRIVATE_PROPERTY(QQuickItem::d_func(), QQmlListProperty<QObject> resources READ resources DESIGNABLE false)
     Q_PRIVATE_PROPERTY(QQuickItem::d_func(), QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
 
-    Q_PROPERTY(QPointF pos READ pos FINAL)
     Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged FINAL)
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged FINAL)
     Q_PROPERTY(qreal z READ z WRITE setZ NOTIFY zChanged FINAL)
@@ -156,7 +155,9 @@ class Q_QUICK_EXPORT QQuickItem : public QObject, public QQmlParserStatus
 public:
     enum Flag {
         ItemClipsChildrenToShape  = 0x01,
+#ifndef QT_NO_IM
         ItemAcceptsInputMethod    = 0x02,
+#endif
         ItemIsFocusScope          = 0x04,
         ItemHasContents           = 0x08,
         ItemAcceptsDrops          = 0x10
@@ -218,10 +219,10 @@ public:
 
     qreal x() const;
     qreal y() const;
-    QPointF pos() const;
+    QPointF position() const;
     void setX(qreal);
     void setY(qreal);
-    void setPos(const QPointF &);
+    void setPosition(const QPointF &);
 
     qreal width() const;
     void setWidth(qreal);
@@ -321,7 +322,9 @@ public:
     Q_INVOKABLE void forceActiveFocus();
     Q_INVOKABLE QQuickItem *childAt(qreal x, qreal y) const;
 
+#ifndef QT_NO_IM
     virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
+#endif
 
     struct UpdatePaintNodeData {
        QSGTransformNode *transformNode;
@@ -371,7 +374,9 @@ protected:
     bool isComponentComplete() const;
     virtual void itemChange(ItemChange, const ItemChangeData &);
 
+#ifndef QT_NO_IM
     void updateInputMethod(Qt::InputMethodQueries queries = Qt::ImQueryInput);
+#endif
 
     bool widthValid() const; // ### better name?
     bool heightValid() const; // ### better name?
@@ -382,7 +387,9 @@ protected:
 
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
+#ifndef QT_NO_IM
     virtual void inputMethodEvent(QInputMethodEvent *);
+#endif
     virtual void focusInEvent(QFocusEvent *);
     virtual void focusOutEvent(QFocusEvent *);
     virtual void mousePressEvent(QMouseEvent *event);

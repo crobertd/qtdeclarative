@@ -399,12 +399,14 @@ QObject *QQmlVME::run(QList<QQmlError> *errors,
         QML_STORE_POINTER(StoreString, &PRIMITIVES.at(instr.value));
         QML_STORE_POINTER(StoreByteArray, &DATAS.at(instr.value));
         QML_STORE_POINTER(StoreUrl, &URLS.at(instr.value));
+#ifndef QT_NO_TRANSLATION
         QML_STORE_VALUE(StoreTrString, QString,
                         QCoreApplication::translate(DATAS.at(instr.context).constData(),
                                                     DATAS.at(instr.text).constData(),
                                                     DATAS.at(instr.comment).constData(),
                                                     instr.n));
         QML_STORE_VALUE(StoreTrIdString, QString, qtTrId(DATAS.at(instr.text).constData(), instr.n));
+#endif
 
         // Store a literal value in a QList
         QML_STORE_LIST(StoreStringList, QStringList, PRIMITIVES.at(instr.value));
@@ -1245,6 +1247,7 @@ v8::Persistent<v8::Object> QQmlVME::run(QQmlContextData *parentCtxt, QQmlScriptD
         script->initialize(parentCtxt->engine);
 
     v8::Local<v8::Object> qmlglobal = v8engine->qmlScope(ctxt, 0);
+    v8engine->contextWrapper()->takeContextOwnership(qmlglobal);
 
     if (!script->m_program.IsEmpty()) {
         script->m_program->Run(qmlglobal);
@@ -1325,28 +1328,28 @@ QQmlContextData *QQmlVME::complete(const Interrupt &interrupt)
     bindValues.deallocate();
     }
 
-    {
-    QQmlTrace trace("VME Component Complete");
-    while (!parserStatus.isEmpty()) {
-        QQmlParserStatus *status = parserStatus.pop();
+    if (!QQmlEnginePrivate::designerMode()) { // the qml designer does the component complete later
+        QQmlTrace trace("VME Component Complete");
+        while (!parserStatus.isEmpty()) {
+            QQmlParserStatus *status = parserStatus.pop();
 #ifdef QML_ENABLE_TRACE
-        QQmlData *data = parserStatusData.pop();
+            QQmlData *data = parserStatusData.pop();
 #endif
 
-        if (status && status->d) {
-            status->d = 0;
+            if (status && status->d) {
+                status->d = 0;
 #ifdef QML_ENABLE_TRACE
-            QQmlTrace trace("Component complete");
-            trace.addDetail("URL", data->outerContext->url);
-            trace.addDetail("Line", data->lineNumber);
+                QQmlTrace trace("Component complete");
+                trace.addDetail("URL", data->outerContext->url);
+                trace.addDetail("Line", data->lineNumber);
 #endif
-            status->componentComplete();
+                status->componentComplete();
+            }
+
+            if (watcher.hasRecursed() || interrupt.shouldInterrupt())
+                return 0;
         }
-        
-        if (watcher.hasRecursed() || interrupt.shouldInterrupt())
-            return 0;
-    }
-    parserStatus.deallocate();
+        parserStatus.deallocate();
     }
 
     {

@@ -1,4 +1,3 @@
-include($QT_INSTALL_DOCS/global/qt-html-templates-offline.qdocconf)
 include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
 
 project                 = QtQuick
@@ -11,28 +10,30 @@ qhp.projects            = QtQuick
 
 qhp.QtQuick.file                = qtquick.qhp
 qhp.QtQuick.namespace           = org.qt-project.qtquick.500
-qhp.QtQuick.virtualFolder       = qdoc
-qhp.QtQuick.indexTitle          = Qt Quick Reference Documentation
+qhp.QtQuick.virtualFolder       = qtquick
+qhp.QtQuick.indexTitle          = Qt Quick
 qhp.QtQuick.indexRoot           =
 
 qhp.QtQuick.filterAttributes    = qtquick 5.0.0 qtrefdoc
 qhp.QtQuick.customFilters.Qt.name = QtQuick 5.0.0
 qhp.QtQuick.customFilters.Qt.filterAttributes = qtquick 5.0.0
-qhp.QtQuick.subprojects         = classes overviews examples
+qhp.QtQuick.subprojects         = qmltypes classes examples
+qhp.QtQuick.subprojects.qmltypes.title = QML Types
+qhp.QtQuick.subprojects.qmltypes.indexTitle = Qt Quick QML Types
+qhp.QtQuick.subprojects.qmltypes.selectors = class fake:headerfile
+qhp.QtQuick.subprojects.qmltypes.sortPages = true
 qhp.QtQuick.subprojects.classes.title = Classes
-qhp.QtQuick.subprojects.classes.indexTitle = Qt Quick's Classes
+qhp.QtQuick.subprojects.classes.title = C++ Classes
+qhp.QtQuick.subprojects.classes.indexTitle = Qt Quick Module C++ Classes
 qhp.QtQuick.subprojects.classes.selectors = class fake:headerfile
 qhp.QtQuick.subprojects.classes.sortPages = true
-qhp.QtQuick.subprojects.overviews.title = Overviews
-qhp.QtQuick.subprojects.overviews.indexTitle = All Overviews and HOWTOs
-qhp.QtQuick.subprojects.overviews.selectors = fake:page,group,module
-qhp.QtQuick.subprojects.examples.title = Qt Quick Examples
-qhp.QtQuick.subprojects.examples.indexTitle = Qt Quick Examples
+qhp.QtQuick.subprojects.examples.title = Examples
+qhp.QtQuick.subprojects.examples.indexTitle = Qt Quick Code Samples
 qhp.QtQuick.subprojects.examples.selectors = fake:example
 
 tagfile                 = ../../../doc/qtquick/qtquick.tags
 
-depends += qtcore qtxmlpatterns qtqml
+depends += qtcore qtxmlpatterns qtqml qtgui qtlinguist
 
 headerdirs  += ..
 
@@ -44,10 +45,6 @@ exampledirs +=  ../../../examples/ \
 
 imagedirs   += images
 
-#add qml sources because of dependencies
-headerdirs += ../../qml
-exampledirs += ../../qml
-imagedirs += ../../qml
 
 #add particles sources
 headerdirs += ../../particles
@@ -60,4 +57,3 @@ sourcedirs += ../../imports
 #add plugins directory because of dependencies
 headerdirs += ../../plugins
 sourcedirs += ../../plugins
-

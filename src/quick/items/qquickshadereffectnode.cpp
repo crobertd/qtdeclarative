@@ -193,6 +193,9 @@ void QQuickCustomMaterialShader::updateState(const RenderState &state, QSGMateri
                 case QMetaType::QVector4D:
                     program()->setUniformValue(loc, qvariant_cast<QVector4D>(d.value));
                     break;
+                case QMetaType::QMatrix4x4:
+                    program()->setUniformValue(loc, qvariant_cast<QMatrix4x4>(d.value));
+                    break;
                 default:
                     break;
                 }
@@ -270,11 +273,11 @@ void QQuickCustomMaterialShader::compile()
         m_log += program()->log();
     }
 
-    static const char *fallbackVertexShader =
+    static const char fallbackVertexShader[] =
             "uniform highp mat4 qt_Matrix;"
             "attribute highp vec4 v;"
             "void main() { gl_Position = qt_Matrix * v; }";
-    static const char *fallbackFragmentShader =
+    static const char fallbackFragmentShader[] =
             "void main() { gl_FragColor = vec4(1., 0., 1., 1.); }";
 
     if (!m_compiled) {

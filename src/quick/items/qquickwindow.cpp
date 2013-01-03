@@ -75,9 +75,11 @@ QT_BEGIN_NAMESPACE
 void QQuickWindowPrivate::updateFocusItemTransform()
 {
     Q_Q(QQuickWindow);
+#ifndef QT_NO_IM
     QQuickItem *focus = q->activeFocusItem();
     if (focus && qApp->focusObject() == focus)
         qApp->inputMethod()->setInputItemTransform(QQuickItemPrivate::get(focus)->itemToWindowTransform());
+#endif
 }
 
 
@@ -260,7 +262,7 @@ void QQuickWindowPrivate::polishItems()
  * being shown on screen. This feature is very limited in what it supports.
  *
  * For this feature to be useful one needs to hook into beforeRender()
- * and set the render tareget.
+ * and set the render target.
  *
  */
 void QQuickWindowPrivate::setRenderWithoutShowing(bool render)
@@ -334,14 +336,15 @@ void QQuickWindowPrivate::renderSceneGraph(const QSize &size)
     Q_Q(QQuickWindow);
     emit q->beforeRendering();
     int fboId = 0;
-    renderer->setDeviceRect(QRect(QPoint(0, 0), size));
+    const qreal devicePixelRatio = q->devicePixelRatio();
+    renderer->setDeviceRect(QRect(QPoint(0, 0), size * devicePixelRatio));
     if (renderTargetId) {
         fboId = renderTargetId;
         renderer->setViewportRect(QRect(QPoint(0, 0), renderTargetSize));
     } else {
-        renderer->setViewportRect(QRect(QPoint(0, 0), size));
+        renderer->setViewportRect(QRect(QPoint(0, 0), size * devicePixelRatio));
     }
-    renderer->setProjectionMatrixToDeviceRect();
+    renderer->setProjectionMatrixToRect(QRect(QPoint(0, 0), size));
 
     context->renderNextFrame(renderer, fboId);
     emit q->afterRendering();
@@ -1131,6 +1134,8 @@ bool QQuickWindow::event(QEvent *e)
     case QEvent::Leave:
         d->clearHover();
         d->lastMousePosition = QPoint();
+        if (d->mouseGrabberItem)
+            d->mouseGrabberItem->ungrabMouse();
         break;
 #ifndef QT_NO_DRAGANDDROP
     case QEvent::DragEnter:
@@ -1144,8 +1149,10 @@ bool QQuickWindow::event(QEvent *e)
         contentItem()->windowDeactivateEvent();
         break;
     case QEvent::FocusAboutToChange:
+#ifndef QT_NO_IM
         if (d->activeFocusItem)
             qGuiApp->inputMethod()->commit();
+#endif
         break;
     default:
         break;
@@ -1994,12 +2001,13 @@ bool QQuickWindowPrivate::dragOverThreshold(qreal d, Qt::Axis axis, QMouseEvent 
 
 bool QQuickWindowPrivate::isRenderable() const
 {
-    if (geometry.width() <= 0 || geometry.height() <= 0)
+    const QQuickWindow *q = q_func();
+    QRect geom = q->geometry();
+    if (geom.width() <= 0 || geom.height() <= 0)
         return false;
     // Change to be applied after the visibility property is integrated in qtbase:
 //    return visibility != QWindow::Hidden || (renderWithoutShowing && platformWindow);
     // Temporary version which is implementation-agnostic but slightly less efficient:
-    const QQuickWindow *q = q_func();
     return q->isVisible() || (renderWithoutShowing && platformWindow);
 }
 
@@ -2525,7 +2533,7 @@ uint QQuickWindow::renderTargetId() const
 }
 
 /*!
-    Returns the size of the currently set render target; otherwise returns an enpty size.
+    Returns the size of the currently set render target; otherwise returns an empty size.
  */
 QSize QQuickWindow::renderTargetSize() const
 {
@@ -2659,7 +2667,7 @@ QQmlIncubationController *QQuickWindow::incubationController() const
 
 
 /*!
-    Sets weither the scene graph rendering of QML should clear the color buffer
+    Sets whether the scene graph rendering of QML should clear the color buffer
     before it starts rendering to \a enabled.
 
     By disabling clearing of the color buffer, it is possible to do GL painting
@@ -2679,7 +2687,7 @@ void QQuickWindow::setClearBeforeRendering(bool enabled)
 
 
 /*!
-    Returns weither clearing of the color buffer is done before rendering or not.
+    Returns whether clearing of the color buffer is done before rendering or not.
  */
 
 bool QQuickWindow::clearBeforeRendering() const
