@@ -291,15 +291,8 @@ void QQmlIncubatorPrivate::incubate(QQmlVME::Interrupt &i)
             return;
 
         result = tresult;
-        if (errors.isEmpty() && result == 0) {
-            QQmlError error;
-            error.setUrl(compiledData->url);
-            error.setDescription(QQmlComponent::tr("Object context became invalid during incubation"));
-            errors << error;
-            progress = QQmlIncubatorPrivate::Completed;
-
-             goto finishIncubate;
-        }
+        if (errors.isEmpty() && result == 0) 
+            goto finishIncubate;
 
         if (result) {
             QQmlData *ddata = QQmlData::get(result);
