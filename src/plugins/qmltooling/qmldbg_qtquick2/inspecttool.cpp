@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -166,6 +166,7 @@ void InspectTool::hoverMoveEvent(QMouseEvent *event)
     }
 }
 
+#ifndef QT_NO_WHEELEVENT
 void InspectTool::wheelEvent(QWheelEvent *event)
 {
     if (event->orientation() != Qt::Vertical)
@@ -184,6 +185,7 @@ void InspectTool::wheelEvent(QWheelEvent *event)
         }
     }
 }
+#endif
 
 void InspectTool::keyReleaseEvent(QKeyEvent *event)
 {

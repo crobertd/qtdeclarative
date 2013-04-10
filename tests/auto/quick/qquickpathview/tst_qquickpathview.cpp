@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the test suite of the Qt Toolkit.
@@ -118,6 +118,7 @@ private slots:
     void pathUpdateOnStartChanged();
     void package();
     void emptyModel();
+    void emptyPath();
     void closed();
     void pathUpdate();
     void visualDataModel();
@@ -1373,6 +1374,19 @@ void tst_QQuickPathView::emptyModel()
     delete window;
 }
 
+void tst_QQuickPathView::emptyPath()
+{
+    QQuickView *window = createView();
+
+    window->setSource(testFileUrl("emptypath.qml"));
+    qApp->processEvents();
+
+    QQuickPathView *pathview = qobject_cast<QQuickPathView*>(window->rootObject());
+    QVERIFY(pathview != 0);
+
+    delete window;
+}
+
 void tst_QQuickPathView::closed()
 {
     QQmlEngine engine;
@@ -1846,7 +1860,7 @@ void tst_QQuickPathView::snapToItem()
     flick(window, QPoint(200,10), QPoint(10,10), 180);
 
     QVERIFY(pathview->isMoving());
-    QTRY_VERIFY(!pathview->isMoving());
+    QTRY_VERIFY_WITH_TIMEOUT(!pathview->isMoving(), 50000);
 
     QVERIFY(pathview->offset() == qFloor(pathview->offset()));
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the test suite of the Qt Toolkit.
@@ -3087,6 +3087,14 @@ void tst_qquicktextinput::cursorRectangle()
     input.setHAlign(leftToRight ? QQuickTextInput::AlignRight : QQuickTextInput::AlignLeft);
     r = input.cursorRectangle();
     QCOMPARE(r.left(), leftToRight ? input.width() : 0);
+
+    QSignalSpy cursorRectangleSpy(&input, SIGNAL(cursorRectangleChanged()));
+
+    QString widerText = shortText;
+    widerText[1] = 'W'; // Assumes shortText is at least two characters long.
+    input.setText(widerText);
+
+    QCOMPARE(cursorRectangleSpy.count(), 1);
 }
 
 void tst_qquicktextinput::readOnly()
@@ -3448,15 +3456,13 @@ public:
 void tst_qquicktextinput::setHAlignClearCache()
 {
     QQuickView view;
+    view.resize(200, 200);
     MyTextInput input;
     input.setText("Hello world");
     input.setParentItem(view.contentItem());
     view.show();
     view.requestActivate();
     QTest::qWaitForWindowActive(&view);
-#ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23485", Abort);
-#endif
     QTRY_COMPARE(input.nbPaint, 1);
     input.setHAlign(QQuickTextInput::AlignRight);
     //Changing the alignment should trigger a repaint

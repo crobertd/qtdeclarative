@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -253,7 +253,7 @@ void QQuickTrivialWindowManager::renderWindow(QQuickWindow *window)
     QQuickWindowPrivate *cd = QQuickWindowPrivate::get(window);
     cd->polishItems();
 
-    int renderTime, syncTime;
+    int renderTime = 0, syncTime = 0;
     QTime renderTimer;
     if (qquick_render_timing())
         renderTimer.start();

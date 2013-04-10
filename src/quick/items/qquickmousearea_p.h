@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -222,7 +222,9 @@ protected:
     virtual void hoverEnterEvent(QHoverEvent *event);
     virtual void hoverMoveEvent(QHoverEvent *event);
     virtual void hoverLeaveEvent(QHoverEvent *event);
+#ifndef QT_NO_WHEELEVENT
     virtual void wheelEvent(QWheelEvent *event);
+#endif
     virtual bool childMouseEventFilter(QQuickItem *i, QEvent *e);
     virtual void timerEvent(QTimerEvent *event);
     virtual void windowDeactivateEvent();

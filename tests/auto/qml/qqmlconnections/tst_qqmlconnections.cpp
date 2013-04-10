@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the test suite of the Qt Toolkit.
@@ -231,7 +231,7 @@ class TestObject : public QObject
     Q_PROPERTY(bool ran READ ran WRITE setRan)
 
 public:
-    TestObject(QObject *parent = 0) : m_ran(false) {}
+    TestObject(QObject *parent = 0) : QObject(parent), m_ran(false) {}
     ~TestObject() {}
 
     bool ran() const { return m_ran; }

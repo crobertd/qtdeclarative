@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -528,7 +528,9 @@ public:
 #endif
     void deliverFocusEvent(QFocusEvent *);
     void deliverMouseEvent(QMouseEvent *);
+#ifndef QT_NO_WHEELEVENT
     void deliverWheelEvent(QWheelEvent *);
+#endif
     void deliverTouchEvent(QTouchEvent *);
     void deliverHoverEvent(QHoverEvent *);
 #ifndef QT_NO_DRAGANDDROP

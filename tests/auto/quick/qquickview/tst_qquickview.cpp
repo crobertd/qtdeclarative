@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the test suite of the Qt Toolkit.
@@ -153,8 +153,7 @@ void tst_QQuickView::resizemodeitem()
 
     // size update from view
     view->resize(QSize(200,300));
-    QTest::qWait(50);
-    QCOMPARE(item->width(), 200.0);
+    QTRY_COMPARE(item->width(), 200.0);
     QCOMPARE(item->height(), 300.0);
     QCOMPARE(view->size(), QSize(200, 300));
     QCOMPARE(view->size(), view->sizeHint());
@@ -195,9 +194,8 @@ void tst_QQuickView::errors()
 {
     QQuickView *view = new QQuickView;
     QVERIFY(view);
-    QtMessageHandler old = qInstallMessageHandler(silentErrorsMsgHandler);
+    QQmlTestMessageHandler messageHandler;
     view->setSource(testFileUrl("error1.qml"));
-    qInstallMessageHandler(old);
     QVERIFY(view->status() == QQuickView::Error);
     QVERIFY(view->errors().count() == 1);
     delete view;

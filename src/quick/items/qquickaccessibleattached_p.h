@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -127,11 +127,29 @@ public:
         return obj->setProperty(propertyName, value);
     }
 
+    static QObject *findAccessible(QObject *object, QAccessible::Role role = QAccessible::NoRole)
+    {
+        while (object) {
+            QObject *att = QQuickAccessibleAttached::attachedProperties(object);
+            if (att && (role == QAccessible::NoRole || att->property("role").toInt() == role)) {
+                break;
+            }
+            object = object->parent();
+        }
+        return object;
+    }
+
+public Q_SLOTS:
+    void valueChanged() {
+        QAccessibleValueChangeEvent ev(parent(), parent()->property("value"));
+        QAccessible::updateAccessibility(&ev);
+    }
 
 Q_SIGNALS:
     void roleChanged();
     void nameChanged();
     void descriptionChanged();
+
 private:
     QAccessible::Role m_role;
     QString m_name;

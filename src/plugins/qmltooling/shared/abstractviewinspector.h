@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -107,7 +107,9 @@ protected:
     virtual bool keyPressEvent(QKeyEvent *event);
     virtual bool keyReleaseEvent(QKeyEvent *keyEvent);
     virtual bool mouseDoubleClickEvent(QMouseEvent *event);
+#ifndef QT_NO_WHEELEVENT
     virtual bool wheelEvent(QWheelEvent *event);
+#endif
     virtual bool touchEvent(QTouchEvent *event);
     virtual void setShowAppOnTop(bool) = 0;
 

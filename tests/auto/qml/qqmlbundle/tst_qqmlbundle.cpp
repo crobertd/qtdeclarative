@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the test suite of the Qt Toolkit.
@@ -201,7 +201,7 @@ void tst_qqmlbundle::import()
     engine.addImportPath(testFile("imports"));
 
     QQmlComponent component(&engine, testFileUrl("import.qml"));
-    QVERIFY(component.isReady());
+    QVERIFY2(component.isReady(), QQmlDataTest::msgComponentError(component, &engine));
 
     QObject *o = component.create();
     QVERIFY(o != 0);

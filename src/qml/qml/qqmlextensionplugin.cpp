@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -58,8 +58,8 @@ QT_BEGIN_NAMESPACE
     To write a QML extension plugin:
     
     \list
-    \li Subclass QQmlExtensionPlugin, implement registerTypes() method
-    to register types using qmlRegisterType(), and export the class using the Q_EXPORT_PLUGIN2() macro
+    \li Subclass QQmlExtensionPlugin, implement registerTypes() method to register types
+    using qmlRegisterType(), and export the class using the Q_PLUGIN_METADATA() macro
     \li Write an appropriate project file for the plugin
     \li Create a \l{Module Definition qmldir Files}{qmldir file} to describe the plugin
     \endlist
@@ -76,7 +76,7 @@ QT_BEGIN_NAMESPACE
     as a new QML element. It provides the current time through \c hour and \c minute 
     properties, like this:
 
-    \snippet plugins/plugin.cpp 0
+    \snippet qml/plugins/plugin.cpp 0
     \dots
 
     To make this class available as a QML type, create a plugin that registers
@@ -84,7 +84,7 @@ QT_BEGIN_NAMESPACE
     module will be named \c TimeExample (as defined in the project
     file further below).
 
-    \snippet plugins/plugin.cpp plugin
+    \snippet qml/plugins/plugin.cpp plugin
 
     This registers the \c TimeModel class with the 1.0 version of this 
     plugin library, as a QML type called \c Time. The Q_ASSERT statement 
@@ -108,12 +108,12 @@ QT_BEGIN_NAMESPACE
     should be bundled with the plugin, so it needs to be specified in the \c qmldir
     file:
 
-    \quotefile plugins/imports/TimeExample/qmldir
+    \quotefile qml/plugins/imports/TimeExample/qmldir
 
     Once the project is built and installed, the new \c Time element can be 
     used by any QML component that imports the \c TimeExample module:
 
-    \snippet plugins/plugins.qml 0
+    \snippet qml/plugins/plugins.qml 0
 
     The full source code is available in the \l {qml/plugins}{plugins example}.
 
@@ -140,7 +140,7 @@ QT_BEGIN_NAMESPACE
     Constructs a QML extension plugin with the given \a parent.
 
     Note that this constructor is invoked automatically by the
-    Q_EXPORT_PLUGIN2() macro, so there is no need for calling it
+    Q_PLUGIN_METADATA() macro, so there is no need for calling it
     explicitly.
 */
 QQmlExtensionPlugin::QQmlExtensionPlugin(QObject *parent)

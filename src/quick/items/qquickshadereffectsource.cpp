@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -695,6 +695,7 @@ void QQuickShaderEffectSource::setSourceItem(QQuickItem *item)
 void QQuickShaderEffectSource::sourceItemDestroyed(QObject *item)
 {
     Q_ASSERT(item == m_sourceItem);
+    Q_UNUSED(item);
     m_sourceItem = 0;
     update();
     emit sourceItemChanged();

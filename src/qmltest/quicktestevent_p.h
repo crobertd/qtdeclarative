@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the test suite of the Qt Toolkit.
@@ -69,8 +69,10 @@ public Q_SLOTS:
                           int modifiers, int delay);
     bool mouseMove(QObject *item, qreal x, qreal y, int delay, int buttons);
 
+#ifndef QT_NO_WHEELEVENT
     bool mouseWheel(QObject *item, qreal x, qreal y, int buttons,
                int modifiers, int xDelta, int yDelta, int delay);
+#endif
 
 private:
     QWindow *eventWindow();

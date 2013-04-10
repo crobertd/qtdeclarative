@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -52,6 +52,3 @@ void DialogPlugin::registerTypes(const char *uri){
     //qRegisterMetaType<QQmlListProperty<QString> > ("QQmlListProperty<QString>");
         
 }
-
-//FileDialog is the plugin name (same as the TARGET in the project file) and DialogPlugin is the plugin classs
-Q_EXPORT_PLUGIN2(FileDialog, DialogPlugin);

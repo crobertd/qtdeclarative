@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the tools applications of the Qt Toolkit.
@@ -345,9 +345,9 @@ static void usage()
 {
     qWarning("Usage: qmlscene [options] <filename>");
     qWarning(" ");
-    qWarning(" options:");
-    qWarning("  --maximized ............................... run maximized");
-    qWarning("  --fullscreen .............................. run fullscreen");
+    qWarning(" Options:");
+    qWarning("  --maximized ............................... Run maximized");
+    qWarning("  --fullscreen .............................. Run fullscreen");
     qWarning("  --transparent ............................. Make the window transparent");
     qWarning("  --no-multisample .......................... Disable multisampling (anti-aliasing)");
     qWarning("  --no-version-detection .................... Do not try to detect the version of the .qml file");
@@ -356,7 +356,7 @@ static void usage()
     qWarning("  --quit .................................... Quit immediately after starting");
     qWarning("  -I <path> ................................. Add <path> to the list of import paths");
     qWarning("  -B <name> <file> .......................... Add a named bundle");
-    qWarning("  -translation <translationfile> ........... set the language to run in");
+    qWarning("  -translation <translationfile> ............ Set the language to run in");
 
     qWarning(" ");
     exit(1);

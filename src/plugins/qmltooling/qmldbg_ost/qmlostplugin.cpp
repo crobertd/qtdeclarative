@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -144,7 +144,5 @@ void QmlOstPlugin::readyRead()
     QByteArray content = packet.data();
     d->debugServer->receiveMessage(content);
 }
-
-Q_EXPORT_PLUGIN2(qmlostplugin, QmlOstPlugin)
 
 QT_END_NAMESPACE

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -53,6 +53,7 @@ class QmlOstPluginPrivate;
 class QmlOstPlugin : public QObject, public QQmlDebugServerConnection
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qml.QmlOstPlugin")
     Q_DECLARE_PRIVATE(QmlOstPlugin)
     Q_DISABLE_COPY(QmlOstPlugin)
     Q_INTERFACES(QQmlDebugServerConnection)

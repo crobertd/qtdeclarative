@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the QtQml module of the Qt Toolkit.
@@ -290,6 +290,7 @@ void QPacketProtocol::send(const QPacket & p)
     d->sendingPackets.append(sendSize);
     qint32 sendSize32 = sendSize;
     qint64 writeBytes = d->dev->write((char *)&sendSize32, sizeof(qint32));
+    Q_UNUSED(writeBytes);
     Q_ASSERT(writeBytes == sizeof(qint32));
     writeBytes = d->dev->write(p.b);
     Q_ASSERT(writeBytes == p.b.size());

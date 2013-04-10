@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt scene graph research project.
@@ -139,9 +139,9 @@ void GeometryTest::testCustomGeometry()
     };
 
     static QSGGeometry::Attribute attributes[] = {
-        { 0, 2, GL_FLOAT },
-        { 1, 4, GL_UNSIGNED_BYTE },
-        { 2, 4, GL_FLOAT },
+        { 0, 2, GL_FLOAT, 0, 0},
+        { 1, 4, GL_UNSIGNED_BYTE, 0, 0},
+        { 2, 4, GL_FLOAT, 0, 0},
     };
     static QSGGeometry::AttributeSet set = { 4, 6 * sizeof(float) + 4 * sizeof(unsigned char), attributes };
 
