@@ -108,7 +108,11 @@ void QSGDistanceFieldGlyphCache::populate(const QVector<glyph_t> &glyphs)
     int count = glyphs.count();
     for (int i = 0; i < count; ++i) {
         glyph_t glyphIndex = glyphs.at(i);
-        if ((int) glyphIndex >= glyphCount()) {
+        /*
+         * CRDIII - Added the additional 'canRender' check since our Gotham-Book font would not render '...' because it's index
+         * was greater than glyphCount.  The glyph is there but I do not know why the regular code would not include it.
+         */
+        if (((int) glyphIndex >= glyphCount()) && (QRawFontPrivate::get(m_referenceFont)->fontEngine->canRender(glyphIndex) == false)) {
             qWarning("Warning: distance-field glyph is not available with index %d", glyphIndex);
             continue;
         }
