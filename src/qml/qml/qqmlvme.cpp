@@ -190,9 +190,6 @@ QObject *QQmlVME::execute(QList<QQmlError> *errors, const Interrupt &interrupt)
     trace.addDetail("URL", rootComponent->url);
 #endif
 
-    if (!states.at(0).context->isValid())
-        return 0;
-
     QQmlEnginePrivate *ep = QQmlEnginePrivate::get(states.at(0).context->engine);
 
     ActiveVMERestorer restore(this, ep);
