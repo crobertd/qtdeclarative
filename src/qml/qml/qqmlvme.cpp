@@ -190,6 +190,15 @@ QObject *QQmlVME::execute(QList<QQmlError> *errors, const Interrupt &interrupt)
     trace.addDetail("URL", rootComponent->url);
 #endif
 
+    if (!states.at(0).context->isValid()) {
+        QQmlError error;
+        error.setDescription(tr("Component context became invalid during incubation."));
+        if (states.at(0).compiledData)
+            error.setUrl(states.at(0).compiledData->url);
+        *errors << error;
+        return 0;
+    }
+
     QQmlEnginePrivate *ep = QQmlEnginePrivate::get(states.at(0).context->engine);
 
     ActiveVMERestorer restore(this, ep);
