@@ -965,12 +965,49 @@ QSGNode *QQuickShaderEffectSource::updatePaintNode(QSGNode *oldNode, UpdatePaint
         textureSize *= sourceItem()->window()->devicePixelRatio();
 
     QQuickItemPrivate *d = static_cast<QQuickItemPrivate *>(QObjectPrivate::get(this));
+#if defined(EQUINOX)
+    bool ok = true;
+    do {
+        ok = true;
+        if ((textureSize.height() > 32) && (textureSize.height() <= 64)) {
+            if (textureSize.width() > 512) {
+                textureSize.rheight() = 65;
+                ok = false;
+            }
+        } else if ((textureSize.height() > 64) && (textureSize.height() <= 96)) {
+            if ((textureSize.width() > 256) && (textureSize.width() <= 640)) {
+                textureSize.rheight() = 97;
+                ok = false;
+            }
+        } else if ((textureSize.height() > 96) && (textureSize.height() <= 128)) {
+            if ((textureSize.width() > 256) && (textureSize.width() <= 512)) {
+                textureSize.rheight() = 129;
+                ok = false;
+            }
+        } else if ((textureSize.height() > 128) && (textureSize.height() <= 160)) {
+            if ((textureSize.width() > 128) && (textureSize.width() <= 384)) {
+                textureSize.rheight() = 161;
+                ok = false;
+            }
+        } else if ((textureSize.height() > 160) && (textureSize.height() <= 256)) {
+            if ((textureSize.width() > 128) && (textureSize.width() <= 256)) {
+                textureSize.rheight() = 257;
+                ok = false;
+            }
+        } else if ((textureSize.height() > 256) && (textureSize.height() <= 480)) {
+            if (textureSize.width() <= 128) {
+                textureSize.rwidth() = 129;
+            }
+        }
+    } while (ok == false);
+#else
     const QSize minTextureSize = d->sceneGraphContext()->minimumFBOSize();
     // Keep power-of-two by doubling the size.
     while (textureSize.width() < minTextureSize.width())
         textureSize.rwidth() *= 2;
     while (textureSize.height() < minTextureSize.height())
         textureSize.rheight() *= 2;
+#endif
 
     m_texture->setSize(textureSize);
     m_texture->setRecursive(m_recursive);
