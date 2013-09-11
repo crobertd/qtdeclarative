@@ -482,20 +482,22 @@ QQuickPropertyChanges::ActionList QQuickPropertyChanges::actions()
             a.specifiedProperty = property;
 
             QQmlBinding *newBinding = e.id != QQmlBinding::Invalid ? QQmlBinding::createBinding(e.id, object(), qmlContext(this), e.url.toString(), e.column) : 0;
-            if (!newBinding)
+            if (!newBinding && (e.id == QQmlBinding::Invalid))
                 newBinding = new QQmlBinding(e.expression, false, object(), QQmlContextData::get(qmlContext(this)), e.url.toString(), e.line, e.column);
 
-            if (d->isExplicit) {
-                // in this case, we don't want to assign a binding, per se,
-                // so we evaluate the expression and assign the result.
-                // XXX TODO: add a static QQmlJavaScriptExpression::evaluate(QString)
-                // so that we can avoid creating then destroying the binding in this case.
-                a.toValue = newBinding->evaluate();
-                newBinding->destroy();
-            } else {
-                newBinding->setTarget(prop);
-                a.toBinding = QQmlAbstractBinding::getPointer(newBinding);
-                a.deletableToBinding = true;
+            if (newBinding) {
+                if (d->isExplicit) {
+                    // in this case, we don't want to assign a binding, per se,
+                    // so we evaluate the expression and assign the result.
+                    // XXX TODO: add a static QQmlJavaScriptExpression::evaluate(QString)
+                    // so that we can avoid creating then destroying the binding in this case.
+                    a.toValue = newBinding->evaluate();
+                    newBinding->destroy();
+                } else {
+                    newBinding->setTarget(prop);
+                    a.toBinding = QQmlAbstractBinding::getPointer(newBinding);
+                    a.deletableToBinding = true;
+                }
             }
 
             list << a;

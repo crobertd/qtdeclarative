@@ -80,16 +80,18 @@ QQmlBinding::createBinding(Identifier id, QObject *obj, QQmlContext *ctxt,
     QQmlBinding *rv = 0;
 
     QQmlContextData *ctxtdata = QQmlContextData::get(ctxt);
-    QQmlEnginePrivate *engine = QQmlEnginePrivate::get(ctxt->engine());
-    if (engine && ctxtdata && !ctxtdata->url.isEmpty()) {
-        QQmlTypeData *typeData = engine->typeLoader.getType(ctxtdata->url);
-        Q_ASSERT(typeData);
+    if (ctxt->engine() && ctxtdata && !ctxtdata->url.isEmpty()) {
+        QQmlEnginePrivate *engine = QQmlEnginePrivate::get(ctxt->engine());
+        if (engine) {
+            QQmlTypeData *typeData = engine->typeLoader.getType(ctxtdata->url);
+            Q_ASSERT(typeData);
 
-        if (QQmlCompiledData *cdata = typeData->compiledData()) {
-            rv = new QQmlBinding(cdata->primitives.at(id), true, obj, ctxtdata, url, lineNumber, 0);
+            if (QQmlCompiledData *cdata = typeData->compiledData()) {
+                rv = new QQmlBinding(cdata->primitives.at(id), true, obj, ctxtdata, url, lineNumber, 0);
+            }
+
+            typeData->release();
         }
-
-        typeData->release();
     }
 
     return rv;
